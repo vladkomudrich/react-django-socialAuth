@@ -5,7 +5,6 @@ import googleLogin from '../axios/googleLogin'
 export default function Login() {
 
     async function responseGoogle (response) {
-        console.log(response)
         await googleLogin(response.accessToken)
         await setTimeout(() => window.location.reload(), 1000)
     }
@@ -13,6 +12,7 @@ export default function Login() {
     const onLogout = () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
+        localStorage.removeItem('user')
         window.location.reload()
     }
 

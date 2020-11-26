@@ -1,31 +1,40 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import Nav from '../components/Nav'
 import axiosInstance from '../axios'
 
 export default function Profile() {
+    const history = useHistory()
+
     const [name, setName] = useState('')
     const [avatar, setAvatar] = useState()
     const [bio, setBio] = useState('')
 
     const handleNameChange = e => setName(e.target.value)
-    const handleAvatarChange = e => setAvatar(e.target.file)
+    const handleAvatarChange = e => setAvatar(e.target.files[0])
     const handleBioChange = e => setBio(e.target.value)
 
-    const formData = Object.freeze({
-        full_name: name,
-        avatar: avatar,
-        bio: bio
-    })
-
     const onSave = (e) => {
+
         e.preventDefault()
-        axiosInstance.put('/profiles/', formData)
-          .then(res => {
-              if (res.status !== 200 || res.status !== 201) {
-                  alert('Error')
-              }
+
+        let formData = new FormData()
+        formData.append('full_name', name)
+        formData.append('avatar', avatar, avatar.name)
+        formData.append('bio', bio)
+
+        const user = JSON.parse(localStorage.getItem('user'))
+
+        axiosInstance.get(`/profiles/${user.username}/`)
+          .then(axiosInstance.put(`/profiles/${user.username}/`, formData))
+          .catch(function (error) {
+              if (error.response.status === 404) {
+                axiosInstance.post(`/profiles/`, formData) 
+              } 
           })
-          .then(res => console.log(res.data))
+
+        history.push('/')
+        setTimeout(() => window.location.reload(), 1000)
     }
 
     return (

@@ -12,11 +12,14 @@ class Profile(models.Model):
     bio = models.TextField(max_length=600)
     slug = models.SlugField(blank=True)
 
+    class Meta:
+        ordering = ['-date']
+
     def __str__(self):
         return self.owner.username
 
     def save(self, *args, **kwargs):
-        self.username = self.owner.username
+        self.username = self.owner.username.replace('.', '-')
 
         if not self.slug.strip():
             self.slug = pytils.translit.slugify(self.username)

@@ -13,6 +13,7 @@ export default function Users() {
 
     return (
         <div className="user-component">
+            <div className="container"><h3>Users list:</h3></div>
             {users.map(profile => (
             <div key={profile.id} class="container">
             <div class="card col-12" style={{maxWidth: 540 + 'px', marginTop: 20 + 'px'}}>

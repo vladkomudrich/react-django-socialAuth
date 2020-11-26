@@ -10,24 +10,44 @@ import ProfileData from '../components/ProfileData'
 import CreateButton from '../components/CreateButton'
 
 export default function Home() {
-  const [user, setUser] = useState({})
 
   useEffect(() => {
     axiosInstance.get('/users/current/')
-      .then(res => setUser(res.data))
-      .catch(e => console.log(e))
-  }, {user})
+      .then(res => localStorage.setItem('user', JSON.stringify(res.data)))
+  })
   
   const [profile, setProfile] = useState({})
 
-  useEffect(() => {
-    axiosInstance.get('/profiles/' + user.username)
-      .then(res => setProfile(res.data))
-      .catch(e => console.log(e))
-  }, {profile})
+  useEffect(async () => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    try {
+      const res = await axiosInstance.get('/profiles/' + user.username)
+      if (res.status === 404) {
+        setProfile('')
+      } else {
+        setProfile(res.data)
+      }
+    } catch (error) {}
+  }, {})
 
-  console.log(user)
-  console.log(profile)
+  const isEmptyObject = (obj) => {
+    for (var i in obj) {
+        if (obj.hasOwnProperty(i)) {
+            return false
+        }
+    }
+    return true
+  }
+
+  const CreateOrShow = () => {
+    if (isEmptyObject(profile)) {
+      return <CreateButton />
+    } else {
+      return <ProfileData profile={profile} />
+    }
+  }
+
+  const checkLogin = localStorage.getItem('access_token')
   
   return (
       <>
@@ -35,10 +55,10 @@ export default function Home() {
         <Login />
         <hr />
         <div class="container">
-          {localStorage.getItem('access_token') ? <CreateButton /> : <div></div>}
+          {checkLogin ? <CreateOrShow /> : ''}
         </div>
         <hr />
-        {localStorage.getItem('access_token') ? <Users /> || 'There are no posts yet... Be the first!' : <div className="container">Log In first to see content...</div>}
+        {checkLogin ? <Users /> || 'There are no posts yet... Be the first!' : <div className="container">Log In first to see content...</div>}
       </>
   )
 }

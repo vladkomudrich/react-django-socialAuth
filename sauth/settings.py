@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'your key'
+SECRET_KEY = 'your_key'
 
 DEBUG = True
 
@@ -46,8 +46,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your key'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your key'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your_key'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your_key'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
